@@ -15,59 +15,59 @@ fn obfuscate(tokens: TokenStream) -> Result<TokenStream, syn::Error> {
 	let lit = expect_literal(&mut tokens)?;
 	expect_empty(&mut tokens)?;
 	match &lit {
-		syn::Lit::Str(lit) => Ok(obfuscate_str(lit)),
-		syn::Lit::ByteStr(lit) => Ok(obfuscate_byte_str(lit)),
-		syn::Lit::CStr(lit) => Ok(obfuscate_cstr(lit)),
+		syn::Lit::Str(lit) => obfuscate_str(lit),
+		syn::Lit::ByteStr(lit) => obfuscate_byte_str(lit),
+		syn::Lit::CStr(lit) => obfuscate_cstr(lit),
 		lit => Err(syn::Error::new(lit.span(), "expected a string, byte string or C string literal")),
 	}
 }
 
-fn obfuscate_str(lit: &syn::LitStr) -> TokenStream {
+fn obfuscate_str(lit: &syn::LitStr) -> Result<TokenStream, syn::Error> {
 	let value = lit.value();
 	let mut obfuscated = Vec::with_capacity(value.len());
 	for byte in value.as_bytes() {
-		let pad: u8 = rand::random();
+		let pad: u8 = random()?;
 		obfuscated.push(u16::from_le_bytes([byte ^ pad, pad]));
 	}
 
-	quote! {
+	Ok(quote! {
 		{
 			const DATA: &[u16] = &[#(#obfuscated,)*];
 			(::core::marker::PhantomData::<str>, DATA)
 		}
-	}
+	})
 }
 
-fn obfuscate_byte_str(lit: &syn::LitByteStr) -> TokenStream {
+fn obfuscate_byte_str(lit: &syn::LitByteStr) -> Result<TokenStream, syn::Error> {
 	let value = lit.value();
 	let mut obfuscated = Vec::with_capacity(value.len());
 	for byte in value {
-		let pad: u8 = rand::random();
+		let pad: u8 = random()?;
 		obfuscated.push(u16::from_le_bytes([byte ^ pad, pad]));
 	}
 
-	quote! {
+	Ok(quote! {
 		{
 			const DATA: &[u16] = &[#(#obfuscated,)*];
 			(::core::marker::PhantomData::<[u8]>, DATA)
 		}
-	}
+	})
 }
 
-fn obfuscate_cstr(lit: &syn::LitCStr) -> TokenStream {
+fn obfuscate_cstr(lit: &syn::LitCStr) -> Result<TokenStream, syn::Error> {
 	let value = lit.value();
 	let mut obfuscated = Vec::with_capacity(value.as_bytes_with_nul().len());
 	for byte in value.as_bytes_with_nul() {
-		let pad: u8 = rand::random();
+		let pad: u8 = random()?;
 		obfuscated.push(u16::from_le_bytes([byte ^ pad, pad]));
 	}
 
-	quote! {
+	Ok(quote! {
 		{
 			const DATA: &[u16] = &[#(#obfuscated,)*];
 			(::core::marker::PhantomData::<::core::ffi::CStr>, DATA)
 		}
-	}
+	})
 }
 
 fn expect_literal(tokens: &mut proc_macro2::token_stream::IntoIter) -> Result<syn::Lit, syn::Error> {
@@ -93,4 +93,12 @@ fn expect_empty(tokens: &mut proc_macro2::token_stream::IntoIter) -> Result<(), 
 	} else {
 		Ok(())
 	}
+}
+
+fn random() -> Result<u8, syn::Error> {
+	let mut buffer = [0];
+	getrandom::getrandom(&mut buffer)
+		.map_err(|e| syn::Error::new(Span::call_site(), format_args!("failed to get random data: {e}")))?;
+	let [data] = buffer;
+	Ok(data)
 }
