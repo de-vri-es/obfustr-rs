@@ -1,0 +1,10 @@
+[package]
+name = "obfustr"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+obfustr-macros = { version = "0.0.0", path = "../obfustr-macros" }
+
+[dev-dependencies]
+assert2 = "0.3.15"
