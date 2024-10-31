@@ -12,7 +12,7 @@ However, the decryption key is stored directly next to the data,
 so this does not effectively protect data that needs to be kept secret.
 
 The library supports obfuscating string literals, byte string literals and C string literals.
-All of them are processed using the [`obfuscate`] macro.
+All of them are processed using the [`obfuscate!()`] macro.
 
 ## Example 1: Obfuscate a string literal
 ```rust
@@ -29,4 +29,4 @@ let message = obfuscate!(b"Hello world!"); // This gives a `&[u8]`.
 let message = obfuscate!(c"Hello world!"); // This gives a `CStr`.
 ```
 
-[`obfuscate`]: https://docs.rs/obfustr/latest/obfustr/macro.obfuscate.html
+[`obfuscate!()`]: https://docs.rs/obfustr/latest/obfustr/macro.obfuscate.html

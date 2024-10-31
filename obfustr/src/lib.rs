@@ -10,7 +10,7 @@
 //! so this does not effectively protect data that needs to be kept secret.
 //!
 //! The library supports obfuscating string literals, byte string literals and C string literals.
-//! All of them are processed using the [`obfuscate`] macro.
+//! All of them are processed using the [`obfuscate!()`] macro.
 //!
 //! # Example 1: Obfuscate a string literal
 //!```
