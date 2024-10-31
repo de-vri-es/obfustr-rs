@@ -74,7 +74,7 @@ checksum = "8e9489c2807c139ffd9c1794f4af0ebe86a828db53ecdc7fea2111d0fed085d1"
 
 [[package]]
 name = "obfustr"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "assert2",
  "obfustr-macros",
@@ -82,7 +82,7 @@ dependencies = [
 
 [[package]]
 name = "obfustr-macros"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "getrandom",
  "proc-macro2",
