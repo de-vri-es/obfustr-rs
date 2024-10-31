@@ -72,7 +72,13 @@ impl<T: ?Sized + Data> Decrypted<T> {
 
 impl<T: ?Sized> Drop for Decrypted<T> {
 	fn drop(&mut self) {
-		self.data.fill(0);
+		for byte in &mut self.data {
+			// Use write_volatile to ensure the zero-ing isn't optimized out.
+			// SAFETY: We know all the elements of the slice are valid.
+			unsafe {
+				core::ptr::write_volatile(byte, 0);
+			}
+		}
 	}
 }
 
