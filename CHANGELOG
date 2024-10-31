@@ -1,0 +1,2 @@
+# Unreleased
+- [add][minor] Add `obfuscate!()` macro taking a string, byte string or C string literal.
