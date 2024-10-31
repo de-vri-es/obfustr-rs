@@ -1,2 +1,5 @@
+# Unreleased
+- [change][patch] Add crate title to README.
+
 # Version 0.1.0 - 2024-10-31
 - [add][minor] Add `obfuscate!()` macro taking a string, byte string or C string literal.

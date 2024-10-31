@@ -1,3 +1,5 @@
+# obfustr
+
 Compile time obfuscation of string literals.
 
 May be useful to slightly hinder people from reverse engineering your program.
